@@ -1,0 +1,68 @@
+
+@Aspect
+@Configuration
+public class UserAccessAspect {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    //What kind of method calls I would intercept
+    //execution(* PACKAGE.*.*(..))
+    //Weaving & Weaver
+    @Before("execution(* com.in28minutes.springboot.tutorial.basics.example.aop.data.*.*(..))")
+    public void before(JoinPoint joinPoint) {
+        //Advice
+        logger.info(" Check for user access ");
+        logger.info(" Allowed execution for {}", joinPoint);
+    }
+}
+
+
+AOP Common terminologies: 
+
+Pointcut: the expression used to define when a call to a method should be intercepted. In the above example, execution(* com.in28minutes.springboot.tutorial.basics.
+example.aop.data.*.*(..)) is the pointcut.
+
+Advice: What do you want to do? An advice is the logic that you want to invoke when you intercept a method. In the above example, it is the code inside the before(JoinPoint joinPoint) method.
+
+Aspect: A combination of defining when you want to intercept a method call (Pointcut) and what to do (Advice) is called an Aspect.
+
+Join Point: When the code is executed and the condition for pointcut is met, the advice is executed. The Join Point is a specific execution instance of an advice.
+
+Weaver: Weaver is the framework that implements AOP — AspectJ or Spring AOP.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
++* Using the @After, @AfterReturning, and @AfterThrowing Advices **
+Let’s now the other interception options AOP provides.
+
+@After: executed in two situations — when a method executes successfully or it throws an exception.
+
+@AfterReturning: executed only when a method executes successfully.
+
+@AfterThrowing: executed only when a method throws an exception.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+AOP Best Practices
+
+One AOP best practice is to define a common class to store all the pointcuts. This helps in maintaining the pointcuts in one place.
+
+
+public class CommonJoinPointConfig {
+
+​
+
+    @Pointcut("execution(* com.in28minutes.spring.aop.springaop.data.*.*(..))")
+
+    public void dataLayerExecution() {}
+
+​
+
+    @Pointcut("execution(* com.in28minutes.spring.aop.springaop.business.*.*(..))")
+
+    public void businessLayerExecution() {}
+
+
+}
+
+The above common definition can be used when defining pointcuts in other aspects.
+
+@Around("com.in28minutes.spring.aop.springaop.aspect.CommonJoinPointConfig.businessLayerExecution()")
